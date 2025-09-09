@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.bidnow.mainapp",
+      "sha256_cert_fingerprints": [
+        "E1:7B:95:D5:E8:DE:B0:EE:40:BF:06:EF:DC:46:89:2B:9B:F6:F1:FE:0D:B9:C0:34:35:EE:2A:1A:16:A3:70:D6"
+      ]
+    }
+  }
+]

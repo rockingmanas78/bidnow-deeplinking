@@ -1,0 +1,20 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "T9XQKV6TL6.com.bidnow.mainapp",
+        "paths": [
+          "/home",
+          "/liveStreaming/*",
+          "/searchResult/*",
+          "/store/*",
+          "/home/categoryList/*",
+          "/productDetail/*",
+          "/sellerOrderDetails/*",
+          "/browse/*"
+        ]
+      }
+    ]
+  }
+}

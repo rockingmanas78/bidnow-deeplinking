@@ -1,0 +1,14 @@
+<!doctype html><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Open in BidNow</title>
+<h1>Open in BidNow</h1>
+<button id="open">Open in App</button>
+<p>
+  <a href="https://play.google.com/store/apps/details?id=com.bidnow.mainapp&hl=en-US">Get on Play Store</a><br>
+  <a href="https://apps.apple.com/in/app/bidnow-live-shopping-app/id6746671164">Get on App Store</a><br>
+  <a href="https://bidnow.co.in">View on Web</a>
+</p>
+<script>
+  function toAppScheme(url){try{const u=new URL(url);return 'myapp://'+u.pathname.replace(/^\/+/, '')}catch{return 'myapp://home'}}
+  document.getElementById('open').onclick=()=>{location.href=toAppScheme(location.href)}
+</script>
