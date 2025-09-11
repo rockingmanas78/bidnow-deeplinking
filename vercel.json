@@ -1,4 +1,6 @@
 {
+  "trailingSlash": false,
+
   "headers": [
     {
       "source": "/.well-known/apple-app-site-association",
@@ -13,7 +15,12 @@
       "headers": [{ "key": "Content-Type", "value": "application/json" }]
     }
   ],
+
   "rewrites": [
-    { "source": "/apple-app-site-association", "destination": "/.well-known/apple-app-site-association" }
+    { "source": "/apple-app-site-association", "destination": "/.well-known/apple-app-site-association" },
+
+    { "source": "/.well-known/(.*)", "destination": "/.well-known/$1" },
+
+    { "source": "/(.*)", "destination": "/" }
   ]
 }
