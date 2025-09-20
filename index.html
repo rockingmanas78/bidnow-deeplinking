@@ -1,4 +1,95 @@
-<!doctype html><meta charset="utf-8">
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Open in BidNow</title>
+
+<h1>Open in BidNow</h1>
+<button id="open">Open in App</button>
+<p>
+  <a href="https://play.google.com/store/apps/details?id=com.bidnow.mainapp">Get on Play Store</a><br />
+  <a href="https://apps.apple.com/in/app/bidnow-live-shopping-app/id6746671164">Get on App Store</a><br />
+  <a href="https://bidnow.co.in">View on Web</a>
+</p>
+
+<script>
+  // ---- constants you control ----
+  const ANDROID_PACKAGE = 'com.bidnow.mainapp';
+  const PLAY_URL = 'https://play.google.com/store/apps/details?id=' + ANDROID_PACKAGE;
+  const APP_STORE_URL = 'https://apps.apple.com/in/app/bidnow-live-shopping-app/id6746671164';
+
+  // Build a custom-scheme URL from current path: https://links.../store/24 -> myapp://store/24
+  function toAppScheme(url) {
+    try {
+      const u = new URL(url);
+      return 'myapp://' + u.pathname.replace(/^\/+/, '') + (u.search || '');
+    } catch {
+      return 'myapp://home';
+    }
+  }
+
+  // Build an Android "intent://" URL from current path (Chrome handles fallback)
+  // Docs & usage pattern are standard for Android App Links/Intents. 
+  function toAndroidIntent(url) {
+    const u = new URL(url);
+    const pathAndQuery = (u.pathname || '/') + (u.search || '');
+    // intent://{path}#Intent;scheme=myapp;package={pkg};S.browser_fallback_url={play};end
+    const encodedFallback = encodeURIComponent(PLAY_URL);
+    return `intent://${pathAndQuery.replace(/^\/+/, '')}#Intent;scheme=myapp;package=${ANDROID_PACKAGE};S.browser_fallback_url=${encodedFallback};end`;
+  }
+
+  // Very lightweight UA helpers
+  const ua = navigator.userAgent || '';
+  const isAndroid = /Android/i.test(ua);
+  const isIOS = /iPhone|iPad|iPod/i.test(ua);
+  const isMobile = isAndroid || isIOS;
+  const isCrawler =
+    /facebookexternalhit|Twitterbot|WhatsApp|Slackbot|LinkedInBot|TelegramBot|Pinterest|Discordbot|Googlebot/i.test(ua);
+
+  function openInApp() {
+    const now = Date.now();
+
+    if (isAndroid) {
+      // 1) Let Chrome handle deep link & Play fallback via intent://
+      location.href = toAndroidIntent(location.href);
+      return; // Chrome will either open app or Play; no JS timeout needed
+    }
+
+    if (isIOS) {
+      // 2) Try custom scheme immediately, then fall back to App Store if app didn't open.
+      const appUrl = toAppScheme(location.href);
+
+      let didHide = false;
+      const onVisibility = () => { didHide = true; };
+      document.addEventListener('visibilitychange', onVisibility, { once: true });
+
+      // Try to open the app
+      window.location.href = appUrl;
+
+      // If the page didn't get backgrounded (app opened) within ~1200ms, go to App Store
+      setTimeout(() => {
+        document.removeEventListener('visibilitychange', onVisibility);
+        if (!didHide) {
+          window.location.replace(APP_STORE_URL);
+        }
+      }, 1200);
+      return;
+    }
+
+    // Desktop (or unknown): do nothing automatic—let the user pick "View on Web"
+  }
+
+  // Button remains for manual retry or desktop
+  document.getElementById('open')?.addEventListener('click', openInApp);
+
+  // Auto-run on load for real mobile users (not link preview scrapers)
+  if (isMobile && !isCrawler) {
+    // Give the page a tick to render, then attempt
+    window.requestAnimationFrame(openInApp);
+  }
+</script>
+
+
+<!-- <!doctype html><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Open in BidNow</title>
 <h1>Open in BidNow</h1>
@@ -11,4 +102,4 @@
 <script>
   function toAppScheme(url){try{const u=new URL(url);return 'myapp://'+u.pathname.replace(/^\/+/, '')}catch{return 'myapp://home'}}
   document.getElementById('open').onclick=()=>{location.href=toAppScheme(location.href)}
-</script>
+</script> -->
